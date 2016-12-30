@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 @Transactional
 public interface LinkRepository extends JpaRepository<LinkEntity, Integer> {
-    public List<LinkEntity> findByUserByUserId(UserEntity userEntity);
+    public Integer countByUserByUserId(UserEntity userEntity);
     public List<LinkEntity> findByDirectoryByDirectoryId(DirectoryEntity directoryByDirectoryId);
     public LinkEntity findByIdAndUserByUserId(Integer id, UserEntity userByUserId);
     public List<LinkEntity> findByDirectoryByDirectoryIdAndUserByUserIdAndDeletedAtIsNull(

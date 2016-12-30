@@ -4,6 +4,7 @@ import com.jianyujianyu.model.LevelEntity;
 import com.jianyujianyu.model.LogEntity;
 import com.jianyujianyu.model.UserEntity;
 import com.jianyujianyu.repository.LevelRepository;
+import com.jianyujianyu.repository.LinkRepository;
 import com.jianyujianyu.repository.LogRepository;
 import com.jianyujianyu.repository.UserRepository;
 import com.jianyujianyu.service.LogService;
@@ -34,6 +35,7 @@ public class UserController extends BaseController {
     @Autowired UserService userService;
     @Autowired LogRepository logRepository;
     @Autowired LogService logService;
+    @Autowired LinkRepository linkRepository;
 
     @RequestMapping(value = "/admin/users", method = RequestMethod.GET)
     public String userGet(
@@ -188,6 +190,7 @@ public class UserController extends BaseController {
         // Get the specific user entity
         UserEntity userEntity = userRepository.findOne(userId);
         modelMap.addAttribute("userEntity", userEntity);
+        modelMap.addAttribute("linkCounts", linkRepository.countByUserByUserId(userEntity));
 
         // Get all the logs about user
         List<LogEntity> logEntityList = logRepository.findByUserByUserIdOrderByIdDesc(userEntity);

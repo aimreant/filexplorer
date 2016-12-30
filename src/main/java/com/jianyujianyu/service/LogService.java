@@ -25,13 +25,16 @@ public class LogService {
      */
     public List<LogEntity> getLogs(){
         List<LogEntity> logEntityList = logRepository.findAll();
+
+        if(logEntityList.size() == 0) return logEntityList;
+
         Collections.reverse(logEntityList);
 
         Integer returnCount;
         if(logEntityList.size() >= 20){
-            returnCount = 20 - 1;
+            returnCount = 20;
         }else {
-            returnCount = logEntityList.size() - 1;
+            returnCount = logEntityList.size();
         }
         return logEntityList.subList(0, returnCount);
     }

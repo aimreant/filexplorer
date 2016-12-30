@@ -55,6 +55,10 @@ public class UserService extends BaseService{
     }
 
     public boolean checkSpace(MultipartFile file, UserEntity userEntity){
+        System.out.println(
+                "[UserService]Check Space| File size: "+file.getSize()
+                +" |Rest size: "+ (userEntity.getLevelByLevelId().getSpaceAllow() - userEntity.getSpaceUsage())
+        );
         return file.getSize() <= userEntity.getLevelByLevelId().getSpaceAllow() - userEntity.getSpaceUsage();
     }
 

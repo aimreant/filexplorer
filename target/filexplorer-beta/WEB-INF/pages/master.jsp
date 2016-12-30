@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="layout" uri="http://www.dreamlu.net/tags/jsp-layout.tld" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -149,11 +150,11 @@
 
         <c:if test="${currentUserEntity != null and !isAdmin}">
           <li class="header" style="color: white;">
-            ${currentUserEntity.spaceUsage}
+            ${currentUserEntity.spaceUsage}B
             /
-            ${currentUserEntity.levelByLevelId.spaceAllow}
+            ${currentUserEntity.levelByLevelId.spaceAllow}B
             =
-            ${currentUserEntity.spaceUsage/currentUserEntity.levelByLevelId.spaceAllow}%
+                <fmt:formatNumber value="${currentUserEntity.spaceUsage/currentUserEntity.levelByLevelId.spaceAllow}" type="percent" />
           </li>
         </c:if>
 

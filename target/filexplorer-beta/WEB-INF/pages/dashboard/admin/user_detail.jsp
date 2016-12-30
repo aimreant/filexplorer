@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="layout" uri="http://www.dreamlu.net/tags/jsp-layout.tld" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <layout:override name="sidebar">
 
@@ -147,10 +148,13 @@
                         <b>Level</b> <a class="pull-right">${userEntity.levelByLevelId.id}</a>
                     </li>
                     <li class="list-group-item">
-                        <b>Space</b> <a class="pull-right">${userEntity.spaceUsage/userEntity.levelByLevelId.spaceAllow}%</a>
+                        <b>Space</b>
+                        <a class="pull-right">
+                            <fmt:formatNumber value="${userEntity.spaceUsage/userEntity.levelByLevelId.spaceAllow}" type="percent" />
+                        </a>
                     </li>
                     <li class="list-group-item">
-                        <b>Files</b> <a class="pull-right">${userEntity.linksById.size()}</a>
+                        <b>Files</b> <a class="pull-right">${linkCounts}</a>
                     </li>
                 </ul>
 

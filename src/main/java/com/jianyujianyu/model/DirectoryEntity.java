@@ -120,9 +120,7 @@ public class DirectoryEntity {
 
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "directoryByDirectoryId", cascade={CascadeType.REMOVE})
-    public Collection<LinkEntity> getLinksById() {
-        return linksById;
-    }
+    public Collection<LinkEntity> getLinksById() { return linksById; }
 
     public void setLinksById(Collection<LinkEntity> linksById) {
         this.linksById = linksById;

@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="layout" uri="http://www.dreamlu.net/tags/jsp-layout.tld" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <layout:override name="sidebar">
 
@@ -104,7 +105,7 @@
                             <td>${user.levelByLevelId.id}</td>
                             <td>
                                 <div class="progress progress-xs progress-striped active">
-                                    <div class="progress-bar progress-bar-success" style="width:${user.spaceUsage/user.levelByLevelId.spaceAllow}"></div>
+                                    <div class="progress-bar progress-bar-success" style="width:<fmt:formatNumber value="${user.spaceUsage/user.levelByLevelId.spaceAllow}" type="percent" />"></div>
                                 </div>
                             </td>
                             <td>

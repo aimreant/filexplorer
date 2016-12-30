@@ -24,7 +24,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter{
                              HttpServletResponse response, Object handler)
             throws Exception {
 
-        if(Objects.equals(request.getRequestURI(), "/login")){
+        if(Objects.equals(request.getRequestURI(), "/login")
+                ||
+                Objects.equals(request.getRequestURI(), "/logout")){
             System.out.println("[AuthInterceptor]Enter login page, true forever.");
             return true;
         }
