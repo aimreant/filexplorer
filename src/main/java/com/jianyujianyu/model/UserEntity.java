@@ -122,7 +122,7 @@ public class UserEntity {
         return result;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userByUserId", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userByUserId")
     public Collection<LinkEntity> getLinksById() {
         return linksById;
     }
@@ -131,7 +131,7 @@ public class UserEntity {
         this.linksById = linksById;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userByUserId", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userByUserId")
     public Collection<DirectoryEntity> getDirectorysById() {
         return directorysById;
     }

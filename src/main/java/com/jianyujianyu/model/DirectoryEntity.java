@@ -1,5 +1,8 @@
 package com.jianyujianyu.model;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -98,7 +101,7 @@ public class DirectoryEntity {
         return result;
     }
 
-    @ManyToOne(cascade={CascadeType.REMOVE})
+    @ManyToOne
     @JoinColumn(name = "parent_id", referencedColumnName = "id", nullable = true)
     public DirectoryEntity getParentId() {
         return parentId;
@@ -109,7 +112,7 @@ public class DirectoryEntity {
     }
 
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentId", cascade={CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentId"/*, cascade={CascadeType.REMOVE}*/)
     public Collection<DirectoryEntity> getChildren() {
         return children;
     }
@@ -119,7 +122,7 @@ public class DirectoryEntity {
     }
 
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "directoryByDirectoryId", cascade={CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "directoryByDirectoryId"/*, cascade={CascadeType.REMOVE}*/)
     public Collection<LinkEntity> getLinksById() { return linksById; }
 
     public void setLinksById(Collection<LinkEntity> linksById) {

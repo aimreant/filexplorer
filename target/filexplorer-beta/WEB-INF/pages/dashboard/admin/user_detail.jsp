@@ -115,6 +115,40 @@
                         <div class="timeline-body">
                                 ${log.operation}
                         </div>
+
+                        <c:if test="${log.linkByLinkId != null}">
+                            <c:if test="${formatter.isImg(log.linkByLinkId.fileByFileId)}">
+                                <div class="box">
+                                    <div class="box-body table-responsive no-padding">
+                                        <img src="/store/${log.linkByLinkId.fileByFileId.hash}" style="width: 100%;"/>
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                            </c:if>
+
+                            <c:if test="${formatter.isVideo(log.linkByLinkId.fileByFileId)}">
+                                <div class="box">
+                                    <div class="box-body table-responsive no-padding">
+                                        <video src="/store/${log.linkByLinkId.fileByFileId.hash}" controls="controls" style="width: 100%;">
+                                            您的浏览器不支持 video 标签。
+                                        </video>
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                            </c:if>
+
+                            <c:if test="${formatter.isAudio(log.linkByLinkId.fileByFileId)}">
+                                <div class="box">
+                                    <div class="box-body table-responsive no-padding">
+                                        <audio src="/store/${log.linkByLinkId.fileByFileId.hash}" controls="controls" style="width: 100%;">
+                                            您的浏览器不支持 audio 标签。
+                                        </audio>
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                            </c:if>
+                        </c:if>
+
                         <div class="timeline-footer">
                             <c:if test="${log.linkByLinkId != null}">
                                 <a class="btn btn-warning btn-flat btn-xs" href="/admin/files/${log.linkByLinkId.fileByFileId.id}">View File</a>

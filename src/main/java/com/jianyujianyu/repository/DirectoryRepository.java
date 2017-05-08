@@ -17,5 +17,5 @@ public interface DirectoryRepository extends JpaRepository<DirectoryEntity, Inte
     public List<DirectoryEntity> findByParentIdAndUserByUserIdAndDeletedAtIsNull(DirectoryEntity parentId, UserEntity userByUserId);
     public List<DirectoryEntity> findByParentIdAndUserByUserIdAndDeletedAtIsNotNull(DirectoryEntity parentId, UserEntity userByUserId);
     public DirectoryEntity findOneByIdAndUserByUserId(Integer id, UserEntity userEntity);
-
+    public List<DirectoryEntity> findByUserByUserIdAndDeletedAtIsNotNull(UserEntity userEntity);
 }

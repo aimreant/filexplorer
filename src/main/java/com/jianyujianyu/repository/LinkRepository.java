@@ -28,4 +28,6 @@ public interface LinkRepository extends JpaRepository<LinkEntity, Integer> {
             DirectoryEntity directoryByDirectoryId,
             UserEntity userByUserId
     );
+
+    public List<LinkEntity> findByUserByUserIdAndDeletedAtIsNotNull(UserEntity userEntity);
 }

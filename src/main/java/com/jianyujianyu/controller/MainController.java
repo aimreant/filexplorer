@@ -36,6 +36,7 @@ public class MainController {
         UserEntity userEntity = (UserEntity) httpSession.getAttribute("filexplorer_o");
         List<LogEntity> logEntityList = logRepository.findByUserByUserIdOrderByIdDesc(userEntity);
         modelMap.addAttribute("logEntityList", logEntityList);
+        modelMap.addAttribute("formatter", new BaseController());
 
         // Get String about logs
         String stat = logService.stat(userEntity);

@@ -68,7 +68,7 @@ public class DirectoryService {
                 parentDir, userEntity
         );
 
-        // directoryEntityList = directoryRepository.findChildren(dirId);
+        directoryEntityList = directoryRepository.findByUserByUserIdAndDeletedAtIsNotNull(userEntity);
         return directoryEntityList;
     }
 
@@ -84,6 +84,10 @@ public class DirectoryService {
         linkEntityList = linkRepository.findByDirectoryByDirectoryIdAndUserByUserIdAndDeletedAtIsNotNull(
                 parentDir, userEntity
         );
+
+        linkEntityList = linkRepository.findByUserByUserIdAndDeletedAtIsNotNull(userEntity);
+
+
         return linkEntityList;
     }
 
@@ -108,9 +112,29 @@ public class DirectoryService {
     @Transactional
     public void deleteDirectory(DirectoryEntity directoryEntity, UserEntity userEntity){
 
-        logService.createLog("Delete Directory " + directoryEntity.getName(), null, userEntity);
-        directoryRepository.delete(directoryEntity);
+        List<DirectoryEntity> directoryEntityList = (List<DirectoryEntity>) directoryEntity.getChildren();
+        List<LinkEntity> linkEntityList = (List<LinkEntity>) directoryEntity.getLinksById();
+        if(directoryEntityList.size() == 0 && linkEntityList.size() == 0){
+            //logService.createLog("Delete Directory " + directoryEntity.getName(), null, userEntity);
+            delete(directoryEntity, userEntity);
+            return;
+        }
 
+        for (LinkEntity linkEntity:linkEntityList){
+            linkService.deleteLinkWithoutLogging(linkEntity, userEntity);
+        }
+
+        for (DirectoryEntity subDirectoryEntity:directoryEntityList){
+            deleteDirectory(subDirectoryEntity, userEntity);
+        }
+
+        //delete(directoryEntity, userEntity);
+        //directoryRepository.saveAndFlush(directoryEntity);
+        directoryRepository.delete(directoryEntity);
+        //directoryRepository.flush();
+
+
+        // After deleting, re-calculate space for user
 //        Long useSpace = 0L;
 //        for(LinkEntity linkEntity : linkRepository.findByUserByUserId(userEntity)){
 //            useSpace += linkEntity.getFileByFileId().getSize();
@@ -120,5 +144,11 @@ public class DirectoryService {
         //userRepository.saveAndFlush(userEntity);
     }
 
+    @Transactional
+    public void delete(DirectoryEntity directoryEntity, UserEntity userEntity){
+        linkService.removeDirConstraint(directoryEntity);
+        directoryRepository.delete(directoryEntity);
+        directoryRepository.flush();
+    }
 
 }

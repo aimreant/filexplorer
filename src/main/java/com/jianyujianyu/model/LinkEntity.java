@@ -1,5 +1,7 @@
 package com.jianyujianyu.model;
 
+import org.hibernate.annotations.NotFound;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -102,8 +104,8 @@ public class LinkEntity {
         return result;
     }
 
-    @ManyToOne(cascade={CascadeType.REMOVE})
-    @JoinColumn(name = "directory_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne(cascade={CascadeType.REFRESH})
+    @JoinColumn(name = "directory_id", referencedColumnName = "id", nullable = true)
     public DirectoryEntity getDirectoryByDirectoryId() {
         return directoryByDirectoryId;
     }
@@ -134,7 +136,7 @@ public class LinkEntity {
 
 
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "linkByLinkId", cascade={CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "linkByLinkId"/*, cascade={CascadeType.REMOVE}, orphanRemoval=true*/)
     public Collection<LogEntity> getLogsById() {
         return logsById;
     }

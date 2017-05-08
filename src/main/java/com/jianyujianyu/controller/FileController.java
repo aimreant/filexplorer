@@ -11,6 +11,7 @@ import com.jianyujianyu.service.DirectoryService;
 import com.jianyujianyu.service.FileService;
 import com.jianyujianyu.service.LinkService;
 import com.jianyujianyu.service.UserService;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -203,9 +204,18 @@ public class FileController extends BaseController {
 
     }
 
+    /**
+     * Delete the link
+     * @param httpSession
+     * @param attr
+     * @param dir
+     * @param forever
+     * @param linkId
+     * @return
+     */
     @Transactional
     @RequestMapping(value = "/files/{link_id}", method = RequestMethod.DELETE)
-    public String fileRename(
+    public String fileDelete(
             HttpSession httpSession,
             RedirectAttributes attr,
             @RequestParam(value = "dir", required = false) Integer dir,
@@ -237,6 +247,13 @@ public class FileController extends BaseController {
         return "redirect:/files?dir=" + dir;
     }
 
+    /**
+     * Control file download(link)
+     * @param httpSession
+     * @param linkId
+     * @param request
+     * @param response
+     */
     @RequestMapping(value = "/files/{link_id}", method = RequestMethod.GET)
     public void fileDownload(
             HttpSession httpSession,
@@ -281,8 +298,59 @@ public class FileController extends BaseController {
 
     }
 
+    @RequestMapping(value = "/store/{fileHash}", method = RequestMethod.GET)
+    public void MediaDownload(
+            HttpSession httpSession,
+            @PathVariable("fileHash") String fileHash,
+            HttpServletRequest request ,
+            HttpServletResponse response
+    ){
+        UserEntity userEntity = (UserEntity) httpSession.getAttribute("filexplorer_o");
+
+        // get fileEntity
+        FileEntity fileEntity = fileRepository.findByHash(fileHash);
+
+
+        if(fileEntity == null){
+            // no hash in db, get a 404
+            fileHash = "404.jpg";
+        }
+
+        try {
+            File file = new File(
+                    request.getSession().getServletContext().getRealPath("WEB-INF")
+                            + File.separator +
+                            "store"
+                            + File.separator +
+                            fileHash
+            );
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("multipart/form-data");
+            response.setHeader(
+                    "Content-Disposition",
+                    "attachment;filename=" +
+                            java.net.URLEncoder.encode(fileHash, "UTF-8")
+            );
+            response.setHeader("Content-Length", "" + file.length());
+
+            InputStream in = new BufferedInputStream(new FileInputStream(file));
+            OutputStream out = response.getOutputStream();
+            byte[] b = new byte[1024];
+            int length;
+            while ((length = in.read(b)) != -1) {
+                out.write(b, 0, length);
+            }
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+    }
+
     /**
-     * Permission for admin
+     * List file detail
      * @return
      */
     @RequestMapping(value = "/admin/files/{file_id}", method = RequestMethod.GET)
@@ -302,8 +370,18 @@ public class FileController extends BaseController {
 
         List<LinkEntity> linkEntityList = (List<LinkEntity>)fileEntity.getLinksById();
 
+        // randomly get a link, stand for the file
+        LinkEntity linkEntity = linkEntityList.get(0);
+
+
         modelMap.addAttribute("fileEntity", fileEntity);
         modelMap.addAttribute("linkEntityList", linkEntityList);
+        modelMap.addAttribute("linkEntity", linkEntity);
+
+        // set suffix flags to fe
+        modelMap.addAttribute("isImg", isImg(fileEntity));
+        modelMap.addAttribute("isVideo", isVideo(fileEntity));
+        modelMap.addAttribute("isAudio", isAudio(fileEntity));
 
         return "dashboard/admin/file_detail";
     }

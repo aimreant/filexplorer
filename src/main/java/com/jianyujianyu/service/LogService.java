@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -39,6 +40,14 @@ public class LogService {
         return logEntityList.subList(0, returnCount);
     }
 
+    @Transactional
+    public void removeLinkConstraint(LinkEntity linkEntity){
+        for(LogEntity logEntity: linkEntity.getLogsById()){
+            logEntity.setLinkByLinkId(null);
+            logRepository.saveAndFlush(logEntity);
+        }
+    }
+
     public boolean createLog(String operation, LinkEntity linkByLinkId, UserEntity userByUserId){
 
         if(userByUserId != null) {
@@ -56,9 +65,11 @@ public class LogService {
      * @return a string, which is a js array
      */
     public String stat(UserEntity userByUserId){
-        List<LogEntity> logEntityList = logRepository.findByUserByUserId(userByUserId);
-        HashMap<Integer, Integer> dayOperation = new HashMap<Integer, Integer>();
+        List<LogEntity> logEntityList = logRepository.findByUserByUserIdOrderByIdDesc(userByUserId);
+        SortedMap<Long, Integer> dayOperation = new TreeMap<Long, Integer>();
         Calendar cal = Calendar.getInstance();
+
+        // make a [] array for js
         StringBuilder returnStr = new StringBuilder("[");
 
         Integer day = 0;
@@ -66,14 +77,16 @@ public class LogService {
         for(LogEntity logEntity : logEntityList){
             cal.setTime(logEntity.getCreatedAt());
             day = cal.get(Calendar.DAY_OF_YEAR);
-            if(dayOperation.containsKey(day)){
-                dayOperation.replace(day, dayOperation.get(day)+1);
+            Timestamp ts = Timestamp.valueOf(String.valueOf(logEntity.getCreatedAt()));
+            long tsday = ts.getTime()/(1000 * 60 * 60 * 24);
+            if(dayOperation.containsKey(tsday)){
+                dayOperation.replace(tsday, dayOperation.get(tsday)+1);
             }else{
-                dayOperation.put(day, 1);
+                dayOperation.put(tsday, 1);
             }
         }
 
-        for(Map.Entry<Integer, Integer> entry : dayOperation.entrySet()){
+        for(Map.Entry<Long, Integer> entry : dayOperation.entrySet()){
             returnStr.append(new StringBuffer("[" + entry.getKey() + "," + entry.getValue() + "],"));
         }
 
@@ -89,8 +102,10 @@ public class LogService {
      */
     public String statAll(){
         List<LogEntity> logEntityList = logRepository.findAll();
-        HashMap<Integer, Integer> dayOperation = new HashMap<Integer, Integer>();
+        SortedMap<Long, Integer> dayOperation = new TreeMap<Long, Integer>();
         Calendar cal = Calendar.getInstance();
+
+        // make a [] array for js
         StringBuilder returnStr = new StringBuilder("[");
 
         Integer day = 0;
@@ -98,14 +113,16 @@ public class LogService {
         for(LogEntity logEntity : logEntityList){
             cal.setTime(logEntity.getCreatedAt());
             day = cal.get(Calendar.DAY_OF_YEAR);
-            if(dayOperation.containsKey(day)){
-                dayOperation.replace(day, dayOperation.get(day)+1);
+            Timestamp ts = Timestamp.valueOf(String.valueOf(logEntity.getCreatedAt()));
+            long tsday = ts.getTime()/(1000 * 60 * 60 * 24);
+            if(dayOperation.containsKey(tsday)){
+                dayOperation.replace(tsday, dayOperation.get(tsday)+1);
             }else{
-                dayOperation.put(day, 1);
+                dayOperation.put(tsday, 1);
             }
         }
 
-        for(Map.Entry<Integer, Integer> entry : dayOperation.entrySet()){
+        for(Map.Entry<Long, Integer> entry : dayOperation.entrySet()){
             returnStr.append(new StringBuffer("[" + entry.getKey() + "," + entry.getValue() + "],"));
         }
 

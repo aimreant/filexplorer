@@ -47,6 +47,52 @@
 <layout:override name="content">
 
     <div class="col-md-9">
+        <c:if test="${isImg}">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Preview for ${fileEntity.hash}</h3>
+                </div>
+
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                    <img src="/store/${fileEntity.hash}" style="width: 100%;"/>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </c:if>
+
+        <c:if test="${isVideo}">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Preview for ${fileEntity.hash}</h3>
+                </div>
+
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                    <video src="/store/${fileEntity.hash}" controls="controls" style="width: 100%;">
+                        您的浏览器不支持 video 标签。
+                    </video>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </c:if>
+
+        <c:if test="${isAudio}">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Preview for ${fileEntity.hash}</h3>
+                </div>
+
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                    <audio src="/store/${fileEntity.hash}" controls="controls" style="width: 100%;">
+                        您的浏览器不支持 audio 标签。
+                    </audio>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </c:if>
+
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title">Links to file ${fileEntity.hash}</h3>

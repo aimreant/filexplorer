@@ -195,6 +195,7 @@ public class UserController extends BaseController {
         // Get all the logs about user
         List<LogEntity> logEntityList = logRepository.findByUserByUserIdOrderByIdDesc(userEntity);
         modelMap.addAttribute("logEntityList", logEntityList);
+        modelMap.addAttribute("formatter", new BaseController());
 
         // Get HashMap about logs
         String stat = logService.stat(userEntity);

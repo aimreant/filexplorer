@@ -78,7 +78,7 @@ public class LogEntity {
         return result;
     }
 
-    @ManyToOne(cascade={CascadeType.REMOVE})
+    @ManyToOne
     @JoinColumn(name = "link_id", referencedColumnName = "id", nullable = true)
     public LinkEntity getLinkByLinkId() {
         return linkByLinkId;

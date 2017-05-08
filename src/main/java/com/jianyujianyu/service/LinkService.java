@@ -1,9 +1,6 @@
 package com.jianyujianyu.service;
 
-import com.jianyujianyu.model.DirectoryEntity;
-import com.jianyujianyu.model.FileEntity;
-import com.jianyujianyu.model.LinkEntity;
-import com.jianyujianyu.model.UserEntity;
+import com.jianyujianyu.model.*;
 import com.jianyujianyu.repository.DirectoryRepository;
 import com.jianyujianyu.repository.LinkRepository;
 import com.jianyujianyu.repository.UserRepository;
@@ -68,18 +65,48 @@ public class LinkService {
         logService.createLog("Rename File " + originName + " to " + linkEntity.getFilename(), linkEntity, userEntity);
     }
 
+    @Transactional
     public void deleteLink(
             LinkEntity linkEntity,
             UserEntity userEntity
     ){
-        linkRepository.delete(linkEntity);
-        System.out.println(
-                "[FileService]User "+userEntity.getUsername()+" deleted link "+linkEntity.getFilename()
-        );
 
         userEntity.setSpaceUsage(userEntity.getSpaceUsage()-linkEntity.getFileByFileId().getSize());
         userRepository.saveAndFlush(userEntity);
 
         logService.createLog("Delete File " + linkEntity.getFilename(), null, userEntity);
+
+        logService.removeLinkConstraint(linkEntity);
+        linkRepository.delete(linkEntity);
+        linkRepository.flush();
+        System.out.println(
+                "[FileService]User "+userEntity.getUsername()+" deleted link "+linkEntity.getFilename()
+        );
+    }
+
+    @Transactional
+    public void deleteLinkWithoutLogging(
+            LinkEntity linkEntity,
+            UserEntity userEntity
+    ){
+
+        //userEntity.setSpaceUsage(userEntity.getSpaceUsage()-linkEntity.getFileByFileId().getSize());
+        //userRepository.saveAndFlush(userEntity);
+
+        logService.removeLinkConstraint(linkEntity);
+        linkEntity.setDirectoryByDirectoryId(null);
+        linkRepository.delete(linkEntity);
+        linkRepository.flush();
+        System.out.println(
+                "[FileService]User "+userEntity.getUsername()+" deleted link "+linkEntity.getFilename()
+        );
+    }
+
+    @Transactional
+    public void removeDirConstraint(DirectoryEntity directoryEntity){
+        for(LinkEntity linkEntity: directoryEntity.getLinksById()){
+            linkEntity.setDirectoryByDirectoryId(null);
+            linkRepository.saveAndFlush(linkEntity);
+        }
     }
 }

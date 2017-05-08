@@ -1,10 +1,13 @@
 package com.jianyujianyu.controller;
 
+import com.jianyujianyu.model.FileEntity;
+import com.jianyujianyu.model.LinkEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.List;
 
 /**
  * Created by aimreant on 11/10/16.
@@ -16,6 +19,65 @@ public class BaseController {
     final int SUCCESS = 1;
     final int DELETE = 2;
     final int RENAME = 3;
+
+    // list available format suffix
+    final String[] imageSuffixes = {".jpg", ".jpeg", ".png", ".gif"};
+    final String[] videoSuffixes = {".ogg", ".mp4", ".webm"};
+    final String[] audioSuffixes = {".wav", ".mp3"};
+
+    /**
+     * Judge whether a file is image using name
+     * @param fileEntity
+     * @return
+     */
+    public boolean isImg(FileEntity fileEntity){
+        List<LinkEntity> linkEntityList = (List<LinkEntity>)fileEntity.getLinksById();
+        // randomly get a link, stand for the file
+        LinkEntity linkEntity = linkEntityList.get(0);
+
+        for(String imageSuffix : imageSuffixes){
+            if(linkEntity.getFilename().contains(imageSuffix)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Judge whether a file is video using name
+     * @param fileEntity
+     * @return
+     */
+    public boolean isVideo(FileEntity fileEntity){
+        List<LinkEntity> linkEntityList = (List<LinkEntity>)fileEntity.getLinksById();
+        // randomly get a link, stand for the file
+        LinkEntity linkEntity = linkEntityList.get(0);
+
+        for(String videoSuffix : videoSuffixes){
+            if(linkEntity.getFilename().contains(videoSuffix)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Judge whether a file is audio using name
+     * @param fileEntity
+     * @return
+     */
+    public boolean isAudio(FileEntity fileEntity){
+        List<LinkEntity> linkEntityList = (List<LinkEntity>)fileEntity.getLinksById();
+        // randomly get a link, stand for the file
+        LinkEntity linkEntity = linkEntityList.get(0);
+
+        for(String audioSuffix : audioSuffixes){
+            if(linkEntity.getFilename().contains(audioSuffix)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Generate MD5 code
